@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Inventra – Supervisor Order</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh;color:#1a202c;max-width:480px;margin:0 auto}
+.hdr{background:linear-gradient(135deg,#1e5631,#2d7a45);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:99;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.hdr h1{font-size:17px;font-weight:700}.hdr-sub{font-size:11px;opacity:.8;margin-top:1px}
+.wrap{padding:14px}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.card-ttl{font-size:14px;font-weight:600;color:#2d3748;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fg label{font-size:12px;font-weight:600;color:#4a5568}
+.fg input,.fg select,.fg textarea{border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;font-size:14px;width:100%;background:#fff;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{outline:none;border-color:#1e5631;box-shadow:0 0 0 3px rgba(30,86,49,.1)}
+.btn{width:100%;padding:13px;border-radius:12px;border:none;cursor:pointer;font-size:15px;font-weight:600;margin-bottom:10px;transition:all .15s}
+.g{background:#1e5631;color:#fff}.g:active{background:#155228;transform:scale(.98)}
+.r{background:#e53e3e;color:#fff}
+.outline{background:#fff;border:1.5px solid #e2e8f0;color:#4a5568}
+.outline:active{background:#f7fafc}
+/* Product picker */
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.prod-card{border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .15s;background:#fff}
+.prod-card.sel{border-color:#1e5631;background:#ebf8f0}
+.prod-card .pname{font-size:12px;font-weight:600;color:#2d3748;line-height:1.4;margin-bottom:6px}
+.prod-card .prate{font-size:13px;color:#1e5631;font-weight:700}
+/* Order items */
+.order-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f4f8}
+.order-item:last-child{border-bottom:none}
+.oi-info{flex:1;min-width:0}
+.oi-name{font-size:13px;font-weight:600;color:#2d3748;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oi-meta{font-size:11px;color:#718096;margin-top:2px}
+.oi-amt{font-size:13px;font-weight:700;color:#1e5631;white-space:nowrap}
+.qty-box{display:flex;align-items:center;gap:6px}
+.qty-btn{width:30px;height:30px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#4a5568;line-height:1}
+.qty-btn:active{background:#f0f4f8}
+.qty-val{font-size:15px;font-weight:700;min-width:28px;text-align:center}
+.badge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:600}
+.b-g{background:#c6f6d5;color:#22543d}.b-o{background:#feebc8;color:#7b341e}.b-r{background:#fed7d7;color:#742a2a}
+.total-bar{background:#1e5631;color:#fff;border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.total-bar .lbl{font-size:13px;opacity:.85}
+.total-bar .amt{font-size:22px;font-weight:700}
+/* Centre list */
+.centre-chip{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:#f7fafc;border-radius:10px;margin-bottom:8px;border:1.5px solid #e2e8f0;cursor:pointer}
+.centre-chip.sel{border-color:#1e5631;background:#ebf8f0}
+.centre-chip-left{display:flex;flex-direction:column;gap:2px}
+.centre-chip-no{font-size:13px;font-weight:700;color:#2d3748}
+.centre-chip-name{font-size:12px;color:#718096}
+/* Tab bar */
+.tabbar{display:flex;background:#fff;border-bottom:2px solid #e2e8f0;position:sticky;top:62px;z-index:98}
+.tbt{flex:1;padding:11px 4px;text-align:center;font-size:12px;font-weight:500;color:#718096;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tbt.on{color:#1e5631;border-bottom-color:#1e5631}
+/* Submit success */
+.success-box{text-align:center;padding:32px 20px}
+.success-ico{font-size:52px;margin-bottom:12px}
+.success-no{font-size:24px;font-weight:700;color:#1e5631;margin-bottom:6px}
+.success-msg{font-size:14px;color:#718096}
+/* Config */
+#cfg{position:fixed;inset:0;background:#f0f4f8;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.cfg-box{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:400px;box-shadow:0 8px 28px rgba(0,0,0,.12)}
+.cfg-box h2{font-size:19px;font-weight:700;color:#1e5631;margin-bottom:6px}
+.cfg-box p{font-size:13px;color:#718096;margin-bottom:16px;line-height:1.6}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e5631;color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;z-index:1000;opacity:0;transition:all .3s;max-width:300px;text-align:center;white-space:nowrap}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.err{background:#c53030}
+.empty{text-align:center;padding:24px;color:#a0aec0}
+.empty .ico{font-size:32px;margin-bottom:8px}
+.pg{display:none}.pg.on{display:block}
+.section-hdr{font-size:12px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;margin-top:4px}
+</style>
+</head>
+<body>
+
+<!-- CONFIG -->
+<div id="cfg">
+  <div class="cfg-box">
+    <h2>🐄 Inventra Dairy</h2>
+    <p>Supervisor Order App<br>Google Apps Script Web App URL கொடுங்கள்:</p>
+    <div class="fg"><label>Web App URL *</label><input type="url" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <button class="btn g" onclick="cfgSave()">தொடரவும் →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+<header class="hdr">
+  <div><div style="font-size:17px;font-weight:700">🐄 Inventra Dairy</div>
+  <div id="hdr-sup" style="font-size:11px;opacity:.8">Supervisor Order App</div></div>
+</header>
+
+<div class="tabbar">
+  <div class="tbt on" onclick="pg('order')">📋 Order போடு</div>
+  <div class="tbt" onclick="pg('myorders')">📦 My Orders</div>
+  <div class="tbt" onclick="pg('rates')">💰 Rate Chart</div>
+</div>
+
+<div class="wrap">
+
+<!-- ORDER PAGE -->
+<div class="pg on" id="pg-order">
+
+  <!-- Step 1: Supervisor -->
+  <div class="card">
+    <div class="card-ttl">👤 Step 1: Supervisor தேர்வு</div>
+    <div class="fg" style="margin:0">
+      <label>Supervisor</label>
+      <select id="sup-select" onchange="onSupChange()">
+        <option value="">Supervisor select பண்ணுங்கள்...</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Step 2: Date -->
+  <div class="card" id="step2" style="display:none">
+    <div class="card-ttl">📅 Step 2: Order Date</div>
+    <div class="fg" style="margin:0"><label>Date</label><input type="date" id="order-date"></div>
+  </div>
+
+  <!-- Step 3: Centre + Products -->
+  <div id="step3" style="display:none">
+    <div class="card">
+      <div class="card-ttl">🏘️ Step 3: Centre & Products சேர்</div>
+      <div class="fg"><label>Centre தேர்வு</label>
+        <select id="centre-select">
+          <option value="">Centre select பண்ணுங்கள்...</option>
+        </select>
+      </div>
+      <div class="section-hdr">Products</div>
+      <div class="prod-grid" id="prod-grid"></div>
+      <button class="btn outline" onclick="addToOrder()" id="add-btn" style="display:none">+ Order-ல் சேர்</button>
+    </div>
+  </div>
+
+  <!-- Order Items -->
+  <div class="card" id="order-items-card" style="display:none">
+    <div class="card-ttl">🛒 Order Items</div>
+    <div id="order-items-list"></div>
+  </div>
+
+  <!-- Total & Submit -->
+  <div id="submit-section" style="display:none">
+    <div class="total-bar">
+      <div><div class="lbl">மொத்த தொகை</div><div id="grand-total" class="amt">₹0</div></div>
+      <div style="text-align:right"><div class="lbl" id="total-items-lbl">0 items</div></div>
+    </div>
+    <div class="fg"><label>குறிப்பு (optional)</label>
+      <input type="text" id="order-note" placeholder="Notes..."></div>
+    <button class="btn g" onclick="submitOrder()">📤 Order Submit பண்ணு</button>
+    <button class="btn outline" onclick="clearOrder()">🗑️ Clear</button>
+  </div>
+
+  <!-- Success -->
+  <div id="success-section" style="display:none" class="success-box">
+    <div class="success-ico">✅</div>
+    <div class="success-no" id="success-ono"></div>
+    <div class="success-msg">Order successfully submitted!</div>
+    <br>
+    <button class="btn g" onclick="newOrder()" style="max-width:240px;margin:0 auto">+ New Order</button>
+  </div>
+
+</div>
+
+<!-- MY ORDERS -->
+<div class="pg" id="pg-myorders">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-ttl" style="margin:0">📦 My Orders</div>
+      <button class="btn outline" style="width:auto;padding:6px 12px;font-size:12px" onclick="loadMyOrders()">🔄</button>
+    </div>
+    <div class="fg" style="margin-bottom:10px">
+      <label>Supervisor</label>
+      <select id="myorders-sup" onchange="loadMyOrders()">
+        <option value="">All Supervisors</option>
+      </select>
+    </div>
+    <div id="myorders-list"></div>
+  </div>
+</div>
+
+<!-- RATE CHART -->
+<div class="pg" id="pg-rates">
+  <div class="card">
+    <div class="card-ttl">💰 Product Rate Chart</div>
+    <div id="rate-chart-list"></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let URL_='', products=[], supervisors=[], centres=[], rates=[];
+let selectedProds={}, orderItems=[];
+
+window.onload=()=>{
+  URL_=localStorage.getItem('inv_sup_url')||'';
+  if(URL_){showApp();}
+  const t=new Date().toISOString().split('T')[0];
+  const di=document.getElementById('order-date');
+  if(di){di.value=t;di.max=t;}
+};
+
+function cfgSave(){
+  const u=document.getElementById('cfg-url').value.trim();
+  if(!u||!u.includes('script.google.com')){toast('சரியான URL','err');return;}
+  URL_=u;localStorage.setItem('inv_sup_url',u);showApp();
+}
+function showApp(){
+  document.getElementById('cfg').style.display='none';
+  document.getElementById('app').style.display='block';
+  loadAll();
+}
+async function api(p){
+  const u=new URL(URL_);Object.entries(p).forEach(([k,v])=>u.searchParams.set(k,v));
+  return (await fetch(u.toString())).json();
+}
+async function loadAll(){
+  try{
+    toast('Loading...');
+    const [sr,pr,rr]=await Promise.all([api({action:'getSupervisors'}),api({action:'getProducts'}),api({action:'getRates'})]);
+    if(sr.success) supervisors=sr.data.filter(s=>s.active==='Yes');
+    if(pr.success) products=pr.data.filter(p=>p.active==='Yes');
+    if(rr.success) rates=rr.data;
+    populateSups();populateProdGrid();renderRateChart();toast('Ready ✓');
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+// Rate map
+function getRate(pid){const r=rates.find(x=>x.productId===pid);return r?parseFloat(r.rate):0;}
+
+// Supervisors
+function populateSups(){
+  const sups=[document.getElementById('sup-select'),document.getElementById('myorders-sup')];
+  sups.forEach(sel=>{
+    if(!sel)return;
+    const cur=sel.value;
+    sel.innerHTML=sel.id==='sup-select'?'<option value="">Supervisor select பண்ணுங்கள்...</option>':'<option value="">All Supervisors</option>';
+    supervisors.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.textContent=s.name+(s.line?' ('+s.line+')':'');sel.appendChild(o);});
+    if(cur)sel.value=cur;
+  });
+}
+
+async function onSupChange(){
+  const sid=document.getElementById('sup-select').value;
+  document.getElementById('step2').style.display=sid?'block':'none';
+  document.getElementById('step3').style.display=sid?'block':'none';
+  if(!sid)return;
+  try{
+    const r=await api({action:'getCentres',supervisorId:sid});
+    centres=r.success?r.data:[];
+    populateCentres();
+  }catch(e){toast('Centres load error','err');}
+}
+
+function populateCentres(){
+  const sel=document.getElementById('centre-select');
+  sel.innerHTML='<option value="">Centre select பண்ணுங்கள்...</option>';
+  centres.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.dataset.no=c.centreNo;o.dataset.name=c.centreName;o.dataset.line=c.line;o.textContent=c.centreNo+' - '+c.centreName+(c.line?' ('+c.line+')':'');sel.appendChild(o);});
+}
+
+// Products grid
+function populateProdGrid(){
+  const grid=document.getElementById('prod-grid');
+  grid.innerHTML=products.map(p=>{
+    const rate=getRate(p.id);
+    return `<div class="prod-card" id="pc-${p.id}" onclick="toggleProd('${p.id}')">
+      <div class="pname">${p.name}</div>
+      <div class="prate">₹${rate}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleProd(pid){
+  const el=document.getElementById('pc-'+pid);
+  if(selectedProds[pid]){delete selectedProds[pid];el.classList.remove('sel');}
+  else{selectedProds[pid]=1;el.classList.add('sel');}
+  const hasSelected=Object.keys(selectedProds).length>0;
+  document.getElementById('add-btn').style.display=hasSelected?'block':'none';
+}
+
+function addToOrder(){
+  const cSel=document.getElementById('centre-select');
+  const cOpt=cSel.options[cSel.selectedIndex];
+  if(!cSel.value){toast('Centre select பண்ணுங்கள்','err');return;}
+  const centreNo=cOpt.dataset.no, centreName=cOpt.dataset.name, line=cOpt.dataset.line||'';
+
+  Object.keys(selectedProds).forEach(pid=>{
+    const prod=products.find(p=>p.id===pid);
+    if(!prod)return;
+    const rate=getRate(pid);
+    const key=centreNo+'_'+pid;
+    const existing=orderItems.find(i=>i.key===key);
+    if(existing){existing.qty+=1;existing.amount=existing.qty*existing.rate;}
+    else{orderItems.push({key, centreNo, centreName, line, productId:pid, productCode:prod.code||'', productName:prod.name, rate, qty:1, amount:rate});}
+  });
+
+  selectedProds={};
+  document.querySelectorAll('.prod-card').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('add-btn').style.display='none';
+  renderOrderItems();
+  toast(Object.keys(selectedProds).length+' items சேர்க்கப்பட்டது');
+}
+
+function renderOrderItems(){
+  const list=document.getElementById('order-items-list');
+  const card=document.getElementById('order-items-card');
+  const sub=document.getElementById('submit-section');
+  if(!orderItems.length){list.innerHTML='';card.style.display='none';sub.style.display='none';return;}
+  card.style.display='block';sub.style.display='block';
+  list.innerHTML=orderItems.map((item,i)=>`
+    <div class="order-item">
+      <div class="oi-info">
+        <div class="oi-name">${item.productName}</div>
+        <div class="oi-meta">${item.centreNo} - ${item.centreName}${item.line?' · '+item.line:''}</div>
+      </div>
+      <div class="qty-box">
+        <button class="qty-btn" onclick="chgQty(${i},-1)">−</button>
+        <span class="qty-val">${item.qty}</span>
+        <button class="qty-btn" onclick="chgQty(${i},1)">+</button>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="oi-amt">₹${item.amount}</div>
+        <button onclick="rmItem(${i})" style="background:none;border:none;color:#e53e3e;cursor:pointer;font-size:13px">✕</button>
+      </div>
+    </div>`).join('');
+  const total=orderItems.reduce((s,i)=>s+i.amount,0);
+  document.getElementById('grand-total').textContent='₹'+total;
+  document.getElementById('total-items-lbl').textContent=orderItems.length+' items';
+}
+
+function chgQty(i,d){
+  orderItems[i].qty=Math.max(1,orderItems[i].qty+d);
+  orderItems[i].amount=orderItems[i].qty*orderItems[i].rate;
+  renderOrderItems();
+}
+function rmItem(i){orderItems.splice(i,1);renderOrderItems();}
+function clearOrder(){orderItems=[];selectedProds={};document.querySelectorAll('.prod-card').forEach(el=>el.classList.remove('sel'));renderOrderItems();}
+function newOrder(){document.getElementById('success-section').style.display='none';clearOrder();}
+
+async function submitOrder(){
+  const sid=document.getElementById('sup-select').value;
+  const sup=supervisors.find(s=>s.id===sid);
+  if(!sid){toast('Supervisor select பண்ணுங்கள்','err');return;}
+  if(!orderItems.length){toast('Items சேர்க்கவில்லை','err');return;}
+  const date=document.getElementById('order-date').value;
+  toast('Submitting...');
+  try{
+    const r=await api({action:'submitOrder',supervisorId:sid,supervisorName:sup.name,date,notes:document.getElementById('order-note').value,items:JSON.stringify(orderItems)});
+    if(r.success){
+      toast(r.message);
+      document.getElementById('success-ono').textContent='Order #'+r.orderNo;
+      document.getElementById('success-section').style.display='block';
+      document.getElementById('order-items-card').style.display='none';
+      document.getElementById('submit-section').style.display='none';
+      orderItems=[];
+    }else toast(r.message,'err');
+  }catch(e){toast('Error','err');}
+}
+
+// MY ORDERS
+async function loadMyOrders(){
+  const sid=document.getElementById('myorders-sup').value;
+  const p={action:'getOrders'};if(sid)p.supervisorId=sid;
+  try{
+    const r=await api(p);
+    if(r.success)renderMyOrders(r.data);
+  }catch(e){toast('Error','err');}
+}
+
+function renderMyOrders(orders){
+  const el=document.getElementById('myorders-list');
+  if(!orders.length){el.innerHTML='<div class="empty"><div class="ico">📦</div><p>Orders இல்லை</p></div>';return;}
+  const stBadge={Pending:'b-o',Issued:'b-g',Cancelled:'b-r'};
+  el.innerHTML=orders.slice(0,30).map(o=>{
+    const d=new Date(o.createdAt).toLocaleDateString('ta-IN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return `<div class="centre-chip" onclick="viewOrder('${o.orderId}')">
+      <div class="centre-chip-left">
+        <div class="centre-chip-no">${o.orderNo} <span class="badge ${stBadge[o.status]||'b-o'}">${o.status}</span></div>
+        <div class="centre-chip-name">${o.supervisorName} · ${d}</div>
+      </div>
+      <div style="font-weight:700;color:#1e5631">₹${parseFloat(o.totalAmount).toFixed(0)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function viewOrder(oid){
+  try{
+    const r=await api({action:'getOrderDetail',orderId:oid});
+    if(!r.success){toast(r.message,'err');return;}
+    const o=r.data;
+    const rows=o.items.map(i=>`<div class="order-item"><div class="oi-info"><div class="oi-name">${i.productName}</div><div class="oi-meta">${i.centreNo} - ${i.centreName}</div></div><div class="qty-val">x${i.qty}</div><div class="oi-amt">₹${parseFloat(i.amount).toFixed(0)}</div></div>`).join('');
+    alert(o.orderNo+'\n'+o.supervisorName+'\n'+o.date+'\n\nItems:\n'+o.items.map(i=>i.centreName+': '+i.productName+' x'+i.qty+'= ₹'+i.amount).join('\n')+'\n\nTotal: ₹'+parseFloat(o.totalAmount).toFixed(0));
+  }catch(e){toast('Error','err');}
+}
+
+// RATE CHART
+function renderRateChart(){
+  const el=document.getElementById('rate-chart-list');
+  if(!products.length){el.innerHTML='<div class="empty"><p>Products இல்லை</p></div>';return;}
+  el.innerHTML=products.map(p=>{
+    const rate=getRate(p.id);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f4f8">
+      <div><div style="font-size:13px;font-weight:600">${p.name}</div><div style="font-size:11px;color:#718096">${p.unit}</div></div>
+      <div style="font-size:16px;font-weight:700;color:#1e5631">₹${rate}</div>
+    </div>`;
+  }).join('');
+}
+
+// PAGE NAV
+function pg(name){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tbt').forEach(t=>t.classList.remove('on'));
+  document.getElementById('pg-'+name).classList.add('on');
+  const idx=['order','myorders','rates'].indexOf(name);
+  document.querySelectorAll('.tbt')[idx]?.classList.add('on');
+  if(name==='myorders')loadMyOrders();
+}
+
+let _tt;
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast on'+(type?' '+type:'');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),3000);
+}
+</script>
+</body>
+</html>
