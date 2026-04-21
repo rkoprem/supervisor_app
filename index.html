@@ -43,12 +43,23 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
 .total-bar{background:#1e5631;color:#fff;border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .total-bar .lbl{font-size:13px;opacity:.85}
 .total-bar .amt{font-size:22px;font-weight:700}
-/* Centre list */
-.centre-chip{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:#f7fafc;border-radius:10px;margin-bottom:8px;border:1.5px solid #e2e8f0;cursor:pointer}
-.centre-chip.sel{border-color:#1e5631;background:#ebf8f0}
-.centre-chip-left{display:flex;flex-direction:column;gap:2px}
-.centre-chip-no{font-size:13px;font-weight:700;color:#2d3748}
-.centre-chip-name{font-size:12px;color:#718096}
+/* Centre search */
+.csw{position:relative;margin-bottom:12px}
+.csw input{border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;font-size:14px;width:100%;background:#fff}
+.csw input:focus{outline:none;border-color:#1e5631;box-shadow:0 0 0 3px rgba(30,86,49,.1)}
+.cdd{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:60;max-height:200px;overflow-y:auto;display:none;margin-top:4px}
+.cdd.on{display:block}
+.cdd-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid #f0f4f8}
+.cdd-item:last-child{border-bottom:none}
+.cdd-item:active{background:#ebf8f0}
+.cdd-no{font-size:13px;font-weight:700;color:#2d3748}
+.cdd-nm{font-size:12px;color:#718096}
+.ctr-chip{background:#ebf8f0;border:1.5px solid #1e5631;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ctr-chip-no{font-size:13px;font-weight:700;color:#1e5631}
+.ctr-chip-nm{font-size:12px;color:#3B6D11;margin-top:1px}
+/* Product search bar */
+.psbar{border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;font-size:14px;width:100%;margin-bottom:10px;background:#fff}
+.psbar:focus{outline:none;border-color:#1e5631;box-shadow:0 0 0 3px rgba(30,86,49,.1)}
 /* Tab bar */
 .tabbar{display:flex;background:#fff;border-bottom:2px solid #e2e8f0;position:sticky;top:62px;z-index:98}
 .tbt{flex:1;padding:11px 4px;text-align:center;font-size:12px;font-weight:500;color:#718096;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
@@ -58,6 +69,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
 .success-ico{font-size:52px;margin-bottom:12px}
 .success-no{font-size:24px;font-weight:700;color:#1e5631;margin-bottom:6px}
 .success-msg{font-size:14px;color:#718096}
+/* Farmer delivery rows */
+.farmer-del-row{background:#f7fafc;border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid #e2e8f0}
+.farmer-del-row.filled{border-color:#1e5631;background:#f0fff4}
+.fdr-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.fdr-code{font-size:14px;font-weight:700;color:#2d3748}
+.fdr-amt{font-size:13px;font-weight:700;color:#1e5631}
+.fdr-prods{display:flex;flex-direction:column;gap:6px}
+.fdr-prod-row{display:flex;align-items:center;gap:8px;font-size:13px}
+.fdr-prod-sel{flex:1;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:13px;background:#fff;-webkit-appearance:none}
+.fdr-qty{width:64px;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 8px;font-size:13px;text-align:center}
+.fdr-prod-amt{width:56px;text-align:right;font-size:12px;font-weight:600;color:#276749}
+.fdr-add-prod{background:none;border:1px dashed #cbd5e0;border-radius:8px;padding:5px 10px;font-size:12px;color:#718096;cursor:pointer;width:100%;margin-top:4px}
+.fdr-add-prod:active{background:#f0f4f8}
 /* Config */
 #cfg{position:fixed;inset:0;background:#f0f4f8;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
 .cfg-box{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:400px;box-shadow:0 8px 28px rgba(0,0,0,.12)}
@@ -92,9 +116,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
 </header>
 
 <div class="tabbar">
-  <div class="tbt on" onclick="pg('order')">📋 Order போடு</div>
-  <div class="tbt" onclick="pg('myorders')">📦 My Orders</div>
-  <div class="tbt" onclick="pg('rates')">💰 Rate Chart</div>
+  <div class="tbt on" onclick="pg('order')">📋 Order</div>
+  <div class="tbt" onclick="pg('deliver')">🧑‍🌾 கொடு</div>
+  <div class="tbt" onclick="pg('transfer')">🚚 Transfer</div>
+  <div class="tbt" onclick="pg('myorders')">📦 Orders</div>
+  <div class="tbt" onclick="pg('rates')">💰 Rates</div>
 </div>
 
 <div class="wrap">
@@ -123,12 +149,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
   <div id="step3" style="display:none">
     <div class="card">
       <div class="card-ttl">🏘️ Step 3: Centre & Products சேர்</div>
-      <div class="fg"><label>Centre தேர்வு</label>
-        <select id="centre-select">
-          <option value="">Centre select பண்ணுங்கள்...</option>
-        </select>
+
+      <div class="fg" style="margin-bottom:6px"><label>Centre தேடு & தேர்வு</label></div>
+      <div class="csw">
+        <input type="text" id="ctr-search" placeholder="🔍 Centre No அல்லது பெயர் தட்டுங்கள்..." oninput="ctrSearch(this.value)" onfocus="ctrSearch(this.value)" autocomplete="off">
+        <div class="cdd" id="cdd"></div>
       </div>
-      <div class="section-hdr">Products</div>
+      <div class="ctr-chip" id="ctr-chip" style="display:none">
+        <div><div class="ctr-chip-no" id="ctr-chip-no"></div><div class="ctr-chip-nm" id="ctr-chip-nm"></div></div>
+        <button onclick="clearCtre()" style="background:none;border:none;color:#c53030;font-size:18px;cursor:pointer;line-height:1">✕</button>
+      </div>
+
+      <div class="section-hdr" style="margin-top:4px">Products தேர்வு</div>
+      <input type="text" class="psbar" id="prod-filter" placeholder="🔍 Product தேடுங்கள்..." oninput="filterProds(this.value)">
       <div class="prod-grid" id="prod-grid"></div>
       <button class="btn outline" onclick="addToOrder()" id="add-btn" style="display:none">+ Order-ல் சேர்</button>
     </div>
@@ -163,6 +196,133 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
 
 </div>
 
+
+
+<!-- DELIVER TO FARMER (Supervisor enters paper data) -->
+<div class="pg" id="pg-deliver">
+
+  <!-- Step 1: Supervisor + Society -->
+  <div class="card">
+    <div class="card-ttl">🧑‍🌾 Farmer-க்கு கொடுத்தது Enter</div>
+
+    <div class="fg">
+      <label>Supervisor</label>
+      <select id="del-sup-sel" onchange="onDelSupChange()">
+        <option value="">Supervisor select...</option>
+      </select>
+    </div>
+
+    <div id="del-step2" style="display:none">
+      <div class="fg" style="margin-bottom:6px"><label>Society தேர்வு</label></div>
+      <div class="csw">
+        <input type="text" id="del-ctr-search" placeholder="🔍 Society தட்டுங்கள்..." oninput="delCtrSearch(this.value)" autocomplete="off">
+        <div class="cdd" id="del-cdd"></div>
+      </div>
+      <div class="ctr-chip" id="del-ctr-chip" style="display:none">
+        <div><div class="ctr-chip-no" id="del-chip-no"></div><div class="ctr-chip-nm" id="del-chip-nm"></div></div>
+        <button onclick="clearDelCtr()" style="background:none;border:none;color:#c53030;font-size:18px;cursor:pointer;line-height:1">✕</button>
+      </div>
+    </div>
+
+    <div class="fg" id="del-date-wrap" style="display:none">
+      <label>Date</label>
+      <input type="date" id="del-date">
+    </div>
+  </div>
+
+  <!-- Farmer delivery table -->
+  <div class="card" id="del-farmer-card" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-ttl" style="margin:0">📋 Farmer-வாரியாக Enter</div>
+      <button class="btn outline sm" onclick="addFarmerRow()">+ Farmer சேர்</button>
+    </div>
+
+    <div id="del-farmer-rows"></div>
+
+    <!-- Total -->
+    <div id="del-total-wrap" style="display:none;margin-top:12px">
+      <div style="background:#c05621;color:#fff;border-radius:10px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div><div style="font-size:12px;opacity:.85">மொத்தம்</div><div style="font-size:20px;font-weight:700" id="del-grand-total">₹0</div></div>
+        <div style="text-align:right"><div style="font-size:11px;opacity:.85" id="del-row-count">0 entries</div></div>
+      </div>
+      <button class="btn g" onclick="submitAllDeliveries()" style="background:#c05621">✓ எல்லாரையும் Record பண்ணு</button>
+      <button class="btn outline" onclick="clearAllDeliveries()" style="margin-top:8px">🗑️ Clear</button>
+    </div>
+
+    <!-- Success -->
+    <div id="del-success" style="display:none;text-align:center;padding:20px">
+      <div style="font-size:40px;margin-bottom:8px">✅</div>
+      <div style="font-size:16px;font-weight:700;color:#1e5631;margin-bottom:4px" id="del-success-msg"></div>
+      <button class="btn g" style="max-width:200px;margin:12px auto 0" onclick="newDeliveryBatch()">+ புதிய Entry</button>
+    </div>
+  </div>
+
+  <!-- Quick History -->
+  <div class="card">
+    <div class="card-ttl">📜 Recent Deliveries</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input type="date" id="dh-from" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:13px;flex:1">
+      <button class="btn outline" style="width:auto;padding:7px 12px;font-size:12px" onclick="loadDelHistory()">Load</button>
+      <button class="btn outline" style="width:auto;padding:7px 12px;font-size:12px" onclick="exportDeliveries()">⬇ CSV</button>
+    </div>
+    <div id="del-history-list"></div>
+  </div>
+
+</div>
+
+<!-- TRANSFER TO INCHARGE -->
+<div class="pg" id="pg-transfer">
+  <div class="card">
+    <div class="card-ttl">🚚 Society Incharge-க்கு Transfer</div>
+
+    <!-- Step 1: Supervisor select -->
+    <div class="fg" style="margin-bottom:10px">
+      <label>Supervisor</label>
+      <select id="xfer-sup-sel" onchange="onXferSupChange()">
+        <option value="">Supervisor select...</option>
+      </select>
+    </div>
+
+    <!-- Centre search -->
+    <div id="xfer-step2" style="display:none">
+      <div class="fg" style="margin-bottom:6px"><label>Centre தேர்வு</label></div>
+      <div class="csw">
+        <input type="text" id="xfer-ctr-search" placeholder="🔍 Centre தட்டுங்கள்..." oninput="xferCtrSearch(this.value)" autocomplete="off">
+        <div class="cdd" id="xfer-cdd"></div>
+      </div>
+      <div class="ctr-chip" id="xfer-ctr-chip" style="display:none">
+        <div><div class="ctr-chip-no" id="xfer-chip-no"></div><div class="ctr-chip-nm" id="xfer-chip-nm"></div></div>
+        <button onclick="clearXferCtr()" style="background:none;border:none;color:#c53030;font-size:18px;cursor:pointer;line-height:1">✕</button>
+      </div>
+    </div>
+
+    <!-- Sup Stock + Qty -->
+    <div id="xfer-stock-wrap" style="display:none">
+      <div class="section-hdr">Supervisor Stock → Transfer Qty</div>
+      <div id="xfer-prod-list"></div>
+      <div id="xfer-submit-wrap" style="display:none;margin-top:10px">
+        <div style="background:#1e5631;color:#fff;border-radius:10px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div><div style="font-size:12px;opacity:.85">Transfer Amount</div><div style="font-size:20px;font-weight:700" id="xfer-total">₹0</div></div>
+          <div style="text-align:right"><div style="font-size:11px;opacity:.85" id="xfer-qty-lbl">0 qty</div></div>
+        </div>
+        <button class="btn g" onclick="submitTransfer()">🚚 Transfer பண்ணு</button>
+        <button class="btn outline" onclick="clearTransfer()">🗑️ Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transfer History -->
+  <div class="card">
+    <div class="card-ttl">📜 Transfer History</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <input type="date" id="xh-from" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:13px;flex:1">
+      <input type="date" id="xh-to" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:13px;flex:1">
+      <button class="btn outline" style="width:auto;padding:7px 12px;font-size:12px" onclick="loadXferHistory()">Load</button>
+    </div>
+    <div id="xfer-history-list"></div>
+  </div>
+</div>
+
 <!-- MY ORDERS -->
 <div class="pg" id="pg-myorders">
   <div class="card">
@@ -195,7 +355,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
 
 <script>
 let URL_='', products=[], supervisors=[], centres=[], rates=[];
-let selectedProds={}, orderItems=[];
+let selectedProds={}, orderItems=[], selectedCentre=null;
 
 window.onload=()=>{
   URL_=localStorage.getItem('inv_sup_url')||'';
@@ -226,8 +386,16 @@ async function loadAll(){
     if(sr.success) supervisors=sr.data.filter(s=>s.active==='Yes');
     if(pr.success) products=pr.data.filter(p=>p.active==='Yes');
     if(rr.success) rates=rr.data;
-    populateSups();populateProdGrid();renderRateChart();toast('Ready ✓');
+    populateSups();populateProdGrid();renderRateChart();
+    toast('Ready ✓');
   }catch(e){toast('Error: '+e.message,'err');}
+}
+
+async function loadSupStock(supId){
+  try{
+    const r=await api({action:'getStockSupervisor',supId,showAll:true});
+    return r.success?r.data:[];
+  }catch(e){return [];}
 }
 
 // Rate map
@@ -251,32 +419,89 @@ async function onSupChange(){
   document.getElementById('step3').style.display=sid?'block':'none';
   if(!sid)return;
   try{
-    const r=await api({action:'getCentres',supervisorId:sid});
-    centres=r.success?r.data:[];
+    // Load ALL centres (supervisor may not be mapped - show all)
+    const r=await api({action:'getCentres'});
+    if(r.success){
+      centres=r.data;
+      // Try supervisor-filtered first, if empty show all
+      const filtered=r.data.filter(c=>c.supId===sid);
+      if(filtered.length>0) centres=filtered;
+      toast(centres.length+' centres loaded');
+    }
     populateCentres();
-  }catch(e){toast('Centres load error','err');}
+  }catch(e){toast('Centres load error: '+e.message,'err');}
 }
 
 function populateCentres(){
-  const sel=document.getElementById('centre-select');
-  sel.innerHTML='<option value="">Centre select பண்ணுங்கள்...</option>';
-  centres.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.dataset.no=c.centreNo;o.dataset.name=c.centreName;o.dataset.line=c.line;o.textContent=c.centreNo+' - '+c.centreName+(c.line?' ('+c.line+')':'');sel.appendChild(o);});
+  // Now handled by ctrSearch - just reset
+  document.getElementById('ctr-search').value='';
+  document.getElementById('cdd').classList.remove('on');
+  document.getElementById('ctr-chip').style.display='none';
+  selectedCentre=null;
 }
 
-// Products grid
-function populateProdGrid(){
+// Centre search
+function ctrSearch(q){
+  const dd=document.getElementById('cdd');
+  const qL=(q||'').toLowerCase().trim();
+  const filtered=qL
+    ? centres.filter(c=>
+        String(c.centreNo).toLowerCase().includes(qL)||
+        c.centreName.toLowerCase().includes(qL)||
+        (c.supName||'').toLowerCase().includes(qL)
+      ).slice(0,15)
+    : centres.slice(0,15);
+  if(!filtered.length){
+    dd.innerHTML='<div class="cdd-item" style="color:#a0aec0">'+(centres.length?'கிடைக்கவில்லை':'Centres இல்லை — Management-ல் add பண்ணுங்கள்')+'</div>';
+    dd.classList.add('on');return;
+  }
+  dd.innerHTML=filtered.map(c=>`
+    <div class="cdd-item" onclick="selectCtre('${c.id}','${String(c.centreNo)}','${c.centreName.replace(/'/g,"\'")}','${(c.line||"").replace(/'/g,"\'")}')">
+      <div class="cdd-no">${c.centreNo} – ${c.centreName}</div>
+      <div class="cdd-nm">${c.line?'Line: '+c.line+' · ':''} ${c.supName||''}</div>
+    </div>`).join('');
+  dd.classList.add('on');
+}
+
+function selectCtre(id,no,name,line){
+  selectedCentre={id,centreNo:no,centreName:name,line};
+  document.getElementById('ctr-search').value='';
+  document.getElementById('cdd').classList.remove('on');
+  document.getElementById('ctr-chip').style.display='flex';
+  document.getElementById('ctr-chip-no').textContent=no+' - '+name;
+  document.getElementById('ctr-chip-nm').textContent=line?'Line: '+line:'';
+}
+
+function clearCtre(){
+  selectedCentre=null;
+  document.getElementById('ctr-chip').style.display='none';
+  document.getElementById('ctr-search').value='';
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.csw'))document.getElementById('cdd').classList.remove('on');
+});
+
+// Products grid with filter
+function populateProdGrid(filter){
   const grid=document.getElementById('prod-grid');
-  grid.innerHTML=products.map(p=>{
+  const q=(filter||'').toLowerCase();
+  const list=q?products.filter(p=>p.name.toLowerCase().includes(q)):products;
+  grid.innerHTML=list.map(p=>{
     const rate=getRate(p.id);
-    return `<div class="prod-card" id="pc-${p.id}" onclick="toggleProd('${p.id}')">
+    const sel=selectedProds[p.id]?'sel':'';
+    return `<div class="prod-card ${sel}" id="pc-${p.id}" onclick="toggleProd('${p.id}')">
       <div class="pname">${p.name}</div>
       <div class="prate">₹${rate}</div>
     </div>`;
-  }).join('');
+  }).join('')||(q?'<div style="grid-column:1/-1;text-align:center;padding:16px;color:#a0aec0;font-size:13px">கிடைக்கவில்லை</div>':'');
 }
+
+function filterProds(q){populateProdGrid(q);}
 
 function toggleProd(pid){
   const el=document.getElementById('pc-'+pid);
+  if(!el)return;
   if(selectedProds[pid]){delete selectedProds[pid];el.classList.remove('sel');}
   else{selectedProds[pid]=1;el.classList.add('sel');}
   const hasSelected=Object.keys(selectedProds).length>0;
@@ -284,10 +509,8 @@ function toggleProd(pid){
 }
 
 function addToOrder(){
-  const cSel=document.getElementById('centre-select');
-  const cOpt=cSel.options[cSel.selectedIndex];
-  if(!cSel.value){toast('Centre select பண்ணுங்கள்','err');return;}
-  const centreNo=cOpt.dataset.no, centreName=cOpt.dataset.name, line=cOpt.dataset.line||'';
+  if(!selectedCentre){toast('Centre தேர்வு பண்ணுங்கள்','err');return;}
+  const {centreNo,centreName,line}=selectedCentre;
 
   Object.keys(selectedProds).forEach(pid=>{
     const prod=products.find(p=>p.id===pid);
@@ -339,7 +562,7 @@ function chgQty(i,d){
   renderOrderItems();
 }
 function rmItem(i){orderItems.splice(i,1);renderOrderItems();}
-function clearOrder(){orderItems=[];selectedProds={};document.querySelectorAll('.prod-card').forEach(el=>el.classList.remove('sel'));renderOrderItems();}
+function clearOrder(){orderItems=[];selectedProds={};selectedCentre=null;document.querySelectorAll('.prod-card').forEach(el=>el.classList.remove('sel'));document.getElementById('ctr-chip').style.display='none';document.getElementById('ctr-search').value='';const pf=document.getElementById('prod-filter');if(pf)pf.value='';populateProdGrid();renderOrderItems();}
 function newOrder(){document.getElementById('success-section').style.display='none';clearOrder();}
 
 async function submitOrder(){
@@ -416,9 +639,30 @@ function pg(name){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tbt').forEach(t=>t.classList.remove('on'));
   document.getElementById('pg-'+name).classList.add('on');
-  const idx=['order','myorders','rates'].indexOf(name);
+  const idx=['order','deliver','transfer','myorders','rates'].indexOf(name);
   document.querySelectorAll('.tbt')[idx]?.classList.add('on');
   if(name==='myorders')loadMyOrders();
+  if(name==='deliver'){
+    const t=new Date().toISOString().split('T')[0];
+    const di=document.getElementById('dh-from');if(di&&!di.value)di.value=t;
+    const ddi=document.getElementById('del-date');if(ddi&&!ddi.value)ddi.value=t;
+    // populate supervisor select
+    const sel=document.getElementById('del-sup-sel');
+    if(sel){
+      sel.innerHTML='<option value="">Supervisor select...</option>';
+      supervisors.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.dataset.name=s.name;o.textContent=s.name+(s.line?' ('+s.line+')':'');sel.appendChild(o);});
+    }
+  }
+  if(name==='transfer'){
+    const t=new Date().toISOString().split('T')[0];
+    ['xh-from','xh-to'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.value)e.value=t;});
+    // populate supervisor select for transfer
+    const sel=document.getElementById('xfer-sup-sel');
+    if(sel){
+      sel.innerHTML='<option value="">Supervisor select...</option>';
+      supervisors.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.dataset.name=s.name;o.textContent=s.name+(s.line?' ('+s.line+')':'');sel.appendChild(o);});
+    }
+  }
 }
 
 let _tt;
@@ -427,6 +671,452 @@ function toast(msg,type=''){
   t.textContent=msg;t.className='toast on'+(type?' '+type:'');
   clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),3000);
 }
+
+// ── TRANSFER JS ─────────────────────────────────────
+let xferSelectedSup={}, xferSelectedCtr=null, xferItems={}, xferSupStock=[];
+
+async function onXferSupChange(){
+  const sel=document.getElementById('xfer-sup-sel');
+  const supId=sel.value;
+  const supName=sel.options[sel.selectedIndex]?.dataset?.name||'';
+  xferSelectedSup={id:supId,name:supName};
+  xferItems={};xferSelectedCtr=null;
+  document.getElementById('xfer-step2').style.display=supId?'block':'none';
+  document.getElementById('xfer-stock-wrap').style.display='none';
+  document.getElementById('xfer-ctr-chip').style.display='none';
+  document.getElementById('xfer-ctr-search').value='';
+  if(!supId)return;
+  // Load supervisor stock
+  xferSupStock=await loadSupStock(supId);
+}
+
+function xferCtrSearch(q){
+  const dd=document.getElementById('xfer-cdd');
+  const filtered=centres.filter(c=>
+    c.centreNo.toLowerCase().includes(q.toLowerCase())||
+    c.centreName.toLowerCase().includes(q.toLowerCase())
+  ).slice(0,10);
+  if(!q.trim()||!filtered.length){
+    dd.innerHTML=q.trim()?'<div class="cdd-item" style="color:#a0aec0">கிடைக்கவில்லை</div>':'';
+    dd.classList.toggle('on',!!q.trim());return;
+  }
+  dd.innerHTML=filtered.map(c=>`
+    <div class="cdd-item" onclick="selectXferCtr('${c.id}','${c.centreNo}','${c.centreName.replace(/'/g,"\'")}','${(c.line||"").replace(/'/g,"\'")}')">
+      <div class="cdd-no">${c.centreNo} - ${c.centreName}</div>
+      ${c.line?'<div class="cdd-nm">Line: '+c.line+'</div>':''}
+    </div>`).join('');
+  dd.classList.add('on');
+}
+
+function selectXferCtr(id,no,name,line){
+  xferSelectedCtr={id,centreNo:no,centreName:name,line};
+  document.getElementById('xfer-ctr-search').value='';
+  document.getElementById('xfer-cdd').classList.remove('on');
+  document.getElementById('xfer-ctr-chip').style.display='flex';
+  document.getElementById('xfer-chip-no').textContent=no+' - '+name;
+  document.getElementById('xfer-chip-nm').textContent=line?'Line: '+line:'';
+  document.getElementById('xfer-stock-wrap').style.display='block';
+  renderXferProds();
+}
+
+function clearXferCtr(){
+  xferSelectedCtr=null;xferItems={};
+  document.getElementById('xfer-ctr-chip').style.display='none';
+  document.getElementById('xfer-ctr-search').value='';
+  document.getElementById('xfer-stock-wrap').style.display='none';
+}
+
+function getSupStock(pid){
+  const s=xferSupStock.find(x=>x.productId===pid);
+  return s?parseFloat(s.qty||0):0;
+}
+
+function renderXferProds(){
+  const list=document.getElementById('xfer-prod-list');
+  list.innerHTML=products.map(p=>{
+    const supQty=getSupStock(p.id);
+    const rate=getRate(p.id);
+    const qty=xferItems[p.id]||0;
+    const disabled=supQty<=0;
+    return `<div class="order-item" style="${disabled?'opacity:.45':''}">
+      <div class="oi-info">
+        <div class="oi-name">${p.name}</div>
+        <div class="oi-meta" style="font-size:11px;color:#718096">Sup stock: ${supQty} | ₹${rate}</div>
+      </div>
+      <div class="qty-box">
+        <button class="qty-btn" onclick="chgXfer('${p.id}',-1)" ${disabled?'disabled':''}>−</button>
+        <span class="qty-val">${qty}</span>
+        <button class="qty-btn" onclick="chgXfer('${p.id}',1)" ${disabled?'disabled':''}>+</button>
+      </div>
+      <div class="oi-amt">₹${(qty*rate).toFixed(0)}</div>
+    </div>`;
+  }).join('');
+  recalcXfer();
+}
+
+function chgXfer(pid,d){
+  const supQty=getSupStock(pid);
+  const cur=xferItems[pid]||0;
+  const nw=Math.max(0,Math.min(supQty,cur+d));
+  if(nw===0)delete xferItems[pid];else xferItems[pid]=nw;
+  renderXferProds();
+}
+
+function recalcXfer(){
+  const hasItems=Object.keys(xferItems).length>0;
+  document.getElementById('xfer-submit-wrap').style.display=hasItems?'block':'none';
+  if(!hasItems)return;
+  const total=Object.entries(xferItems).reduce((s,[pid,qty])=>s+qty*getRate(pid),0);
+  const totalQty=Object.values(xferItems).reduce((s,q)=>s+q,0);
+  document.getElementById('xfer-total').textContent='₹'+total.toFixed(0);
+  document.getElementById('xfer-qty-lbl').textContent=totalQty+' qty';
+}
+
+async function submitTransfer(){
+  if(!xferSelectedSup.id){toast('Supervisor தேர்வு','err');return;}
+  if(!xferSelectedCtr){toast('Centre தேர்வு','err');return;}
+  if(!Object.keys(xferItems).length){toast('Items இல்லை','err');return;}
+
+  const items=Object.entries(xferItems).map(([pid,qty])=>{
+    const prod=products.find(x=>x.id===pid);
+    return {productId:pid,productName:prod?prod.name:'',qty,rate:getRate(pid),
+      centreNo:xferSelectedCtr.centreNo,centreName:xferSelectedCtr.centreName,line:xferSelectedCtr.line||''};
+  });
+
+  toast('Transferring...');
+  try{
+    const r=await api({
+      action:'transferToIncharge',pw:'supervisor_bypass',
+      supId:xferSelectedSup.id,supName:xferSelectedSup.name,
+      inchargeName:'Incharge',
+      items:JSON.stringify(items)
+    });
+    if(r.success){
+      toast(r.message,'ok');
+      clearTransfer();
+      xferSupStock=await loadSupStock(xferSelectedSup.id);
+      renderXferProds();
+      loadXferHistory();
+    }else toast(r.message,'err');
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+function clearTransfer(){
+  xferItems={};
+  document.getElementById('xfer-submit-wrap').style.display='none';
+  renderXferProds();
+}
+
+async function loadXferHistory(){
+  const from=document.getElementById('xh-from').value;
+  const to=document.getElementById('xh-to').value;
+  const supId=document.getElementById('xfer-sup-sel').value;
+  try{
+    const r=await api({action:'getTransfersSup',supId,from,to});
+    const list=document.getElementById('xfer-history-list');
+    if(!r.success||!r.data.length){list.innerHTML='<div class="empty"><div class="ico">📜</div><p>Transfers இல்லை</p></div>';return;}
+    const grouped={};
+    r.data.forEach(x=>{
+      const k=x.centreNo+'-'+x.centreName;
+      if(!grouped[k]) grouped[k]=[];
+      grouped[k].push(x);
+    });
+    list.innerHTML=Object.entries(grouped).map(([centre,items])=>`
+      <div style="padding:10px 0;border-bottom:1px solid #f0f4f8">
+        <div style="font-size:13px;font-weight:700;color:#1e5631;margin-bottom:4px">${centre}</div>
+        ${items.map(x=>`<div style="font-size:12px;color:#4a5568">• ${x.productName.split('-')[0].trim()} × ${x.qty} <span style="color:#a0aec0">${x.date}</span></div>`).join('')}
+      </div>`).join('');
+  }catch(e){toast('Error','err');}
+}
+
+
+// ── DELIVER TO FARMER JS ────────────────────────────────────────
+let delSelectedSup={}, delSelectedCtr=null, delRows=[], delFarmers=[];
+
+function onDelSupChange(){
+  const sel=document.getElementById('del-sup-sel');
+  const id=sel.value, name=sel.options[sel.selectedIndex]?.dataset?.name||'';
+  delSelectedSup={id,name};
+  delSelectedCtr=null; delRows=[];
+  document.getElementById('del-step2').style.display=id?'block':'none';
+  document.getElementById('del-ctr-chip').style.display='none';
+  document.getElementById('del-ctr-search').value='';
+  document.getElementById('del-farmer-card').style.display='none';
+  document.getElementById('del-date-wrap').style.display='none';
+}
+
+function delCtrSearch(q){
+  const dd=document.getElementById('del-cdd');
+  const list=centres.filter(c=>
+    c.centreNo.toLowerCase().includes(q.toLowerCase())||
+    c.centreName.toLowerCase().includes(q.toLowerCase())
+  ).slice(0,10);
+  if(!q.trim()||!list.length){
+    dd.innerHTML=q.trim()?'<div class="cdd-item" style="color:#a0aec0">கிடைக்கவில்லை</div>':'';
+    dd.classList.toggle('on',!!q.trim());return;
+  }
+  dd.innerHTML=list.map(c=>`
+    <div class="cdd-item" onclick="selectDelCtr('${c.centreNo}','${c.centreName.replace(/'/g,"\'")}','${(c.line||"").replace(/'/g,"\'")}')">
+      <div class="cdd-no">${c.centreNo} – ${c.centreName}</div>
+      ${c.line?'<div class="cdd-nm">'+c.line+'</div>':''}
+    </div>`).join('');
+  dd.classList.add('on');
+}
+
+async function selectDelCtr(no,name,line){
+  delSelectedCtr={centreNo:no,centreName:name,line};
+  document.getElementById('del-ctr-search').value='';
+  document.getElementById('del-cdd').classList.remove('on');
+  document.getElementById('del-ctr-chip').style.display='flex';
+  document.getElementById('del-chip-no').textContent=no+' – '+name;
+  document.getElementById('del-chip-nm').textContent=line?'Line: '+line:'';
+  document.getElementById('del-date-wrap').style.display='block';
+  document.getElementById('del-farmer-card').style.display='block';
+  document.getElementById('del-success').style.display='none';
+
+  // Load farmers for this centre
+  try{
+    const r=await api({action:'getFarmers',centreNo:no});
+    delFarmers=r.success?r.data.filter(f=>f.active==='Yes'):[];
+  }catch(e){delFarmers=[];}
+
+  delRows=[];
+  addFarmerRow(); // start with one empty row
+}
+
+function clearDelCtr(){
+  delSelectedCtr=null; delRows=[];
+  document.getElementById('del-ctr-chip').style.display='none';
+  document.getElementById('del-ctr-search').value='';
+  document.getElementById('del-farmer-card').style.display='none';
+  document.getElementById('del-date-wrap').style.display='none';
+}
+
+function addFarmerRow(){
+  const id='fdr_'+Date.now();
+  delRows.push({id, farmerCode:'', items:[{productId:'',qty:1}]});
+  renderDelRows();
+  // scroll to new row
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+
+function removeDelRow(id){
+  delRows=delRows.filter(r=>r.id!==id);
+  renderDelRows();
+}
+
+function setDelFarmer(id, code){
+  const row=delRows.find(r=>r.id===id);
+  if(row) row.farmerCode=code;
+  recalcDelTotal();
+  // update row style
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('filled', !!code);
+}
+
+function addDelProd(rowId){
+  const row=delRows.find(r=>r.id===rowId);
+  if(row) row.items.push({productId:'',qty:1});
+  renderDelRows();
+}
+
+function setDelProd(rowId, idx, pid){
+  const row=delRows.find(r=>r.id===rowId);
+  if(row && row.items[idx]) row.items[idx].productId=pid;
+  recalcDelTotal();
+}
+
+function setDelQty(rowId, idx, qty){
+  const row=delRows.find(r=>r.id===rowId);
+  if(row && row.items[idx]) row.items[idx].qty=Math.max(1,parseInt(qty)||1);
+  recalcDelTotal();
+}
+
+function removeDelProd(rowId, idx){
+  const row=delRows.find(r=>r.id===rowId);
+  if(row && row.items.length>1){ row.items.splice(idx,1); renderDelRows(); }
+}
+
+function buildProdOptions(selectedId){
+  return products.map(p=>`<option value="${p.id}" ${p.id===selectedId?'selected':''}>${p.name.split('(')[0].trim()} – ₹${getRate(p.id)}</option>`).join('');
+}
+
+function buildFarmerOptions(selectedCode){
+  if(!delFarmers.length) return `<option value="">Farmer code தட்டுங்கள்</option>`;
+  return '<option value="">Farmer select...</option>'+delFarmers.map(f=>`<option value="${f.farmerCode}" ${f.farmerCode===selectedCode?'selected':''}>${f.farmerCode}</option>`).join('');
+}
+
+function renderDelRows(){
+  const wrap=document.getElementById('del-farmer-rows');
+  wrap.innerHTML=delRows.map(row=>`
+    <div class="farmer-del-row ${row.farmerCode?'filled':''}" id="${row.id}">
+      <div class="fdr-header">
+        <div style="flex:1;margin-right:8px">
+          ${delFarmers.length>0
+            ? `<select class="fdr-prod-sel" onchange="setDelFarmer('${row.id}',this.value)">${buildFarmerOptions(row.farmerCode)}</select>`
+            : `<input type="text" class="fdr-prod-sel" placeholder="Farmer code (eg: 3698-1)"
+                value="${row.farmerCode}" oninput="setDelFarmer('${row.id}',this.value)">`
+          }
+        </div>
+        <button onclick="removeDelRow('${row.id}')" style="background:none;border:none;color:#e53e3e;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0">✕</button>
+      </div>
+      <div class="fdr-prods">
+        ${row.items.map((item,idx)=>`
+          <div class="fdr-prod-row">
+            <select class="fdr-prod-sel" style="flex:1" onchange="setDelProd('${row.id}',${idx},this.value)">
+              <option value="">Product...</option>${buildProdOptions(item.productId)}
+            </select>
+            <input type="number" class="fdr-qty" value="${item.qty}" min="1"
+              onchange="setDelQty('${row.id}',${idx},this.value)">
+            <div class="fdr-prod-amt">${item.productId?'₹'+(item.qty*getRate(item.productId)).toFixed(0):'–'}</div>
+            ${row.items.length>1?`<button onclick="removeDelProd('${row.id}',${idx})" style="background:none;border:none;color:#e53e3e;cursor:pointer;font-size:14px">✕</button>`:''}
+          </div>`).join('')}
+        <button class="fdr-add-prod" onclick="addDelProd('${row.id}')">+ Product சேர்</button>
+      </div>
+    </div>`).join('');
+
+  recalcDelTotal();
+}
+
+function recalcDelTotal(){
+  let total=0, count=0;
+  delRows.forEach(row=>{
+    row.items.forEach(item=>{
+      if(item.productId&&item.qty){
+        total+=item.qty*getRate(item.productId);
+        count++;
+      }
+    });
+  });
+  const tw=document.getElementById('del-total-wrap');
+  tw.style.display=count>0&&delRows.length>0?'block':'none';
+  document.getElementById('del-grand-total').textContent='₹'+total.toFixed(0);
+  document.getElementById('del-row-count').textContent=delRows.filter(r=>r.farmerCode).length+' farmers';
+}
+
+async function submitAllDeliveries(){
+  if(!delSelectedCtr){toast('Society தேர்வு பண்ணுங்கள்','err');return;}
+  const date=document.getElementById('del-date').value;
+
+  // Validate & build items
+  const allItems=[];
+  const errors=[];
+  delRows.forEach((row,ri)=>{
+    if(!row.farmerCode){errors.push('Row '+(ri+1)+': Farmer code இல்லை');return;}
+    row.items.forEach(item=>{
+      if(!item.productId){errors.push('Farmer '+row.farmerCode+': Product select பண்ணவில்லை');return;}
+      if(item.qty<=0){errors.push('Farmer '+row.farmerCode+': Qty 0');return;}
+      allItems.push({
+        farmerCode:row.farmerCode,
+        centreNo:delSelectedCtr.centreNo,
+        centreName:delSelectedCtr.centreName,
+        productId:item.productId,
+        productName:products.find(p=>p.id===item.productId)?.name||'',
+        qty:item.qty,
+        rate:getRate(item.productId)
+      });
+    });
+  });
+
+  if(errors.length){toast(errors[0],'err');return;}
+  if(!allItems.length){toast('Items இல்லை','err');return;}
+
+  toast('Saving '+allItems.length+' entries...');
+  try{
+    // Use deliverToFarmer for each unique farmer
+    const byFarmer={};
+    allItems.forEach(it=>{
+      if(!byFarmer[it.farmerCode]) byFarmer[it.farmerCode]=[];
+      byFarmer[it.farmerCode].push(it);
+    });
+
+    let success=0;
+    for(const [fc,items] of Object.entries(byFarmer)){
+      const r=await api({
+        action:'deliverToFarmer',
+        pw:'incharge123', // incharge pw - will use default
+        centreNo:delSelectedCtr.centreNo,
+        centreName:delSelectedCtr.centreName,
+        farmerCode:fc,
+        inchargeName:delSelectedSup.name||'Supervisor',
+        date,
+        items:JSON.stringify(items)
+      });
+      if(r.success) success++;
+      else toast('Farmer '+fc+': '+r.message,'err');
+    }
+
+    if(success>0){
+      document.getElementById('del-success-msg').textContent=
+        success+' farmers, '+allItems.length+' entries saved ✓';
+      document.getElementById('del-success').style.display='block';
+      document.getElementById('del-farmer-rows').style.display='none';
+      document.getElementById('del-total-wrap').style.display='none';
+      loadDelHistory();
+    }
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+function newDeliveryBatch(){
+  delRows=[];
+  document.getElementById('del-success').style.display='none';
+  document.getElementById('del-farmer-rows').style.display='block';
+  addFarmerRow();
+}
+
+function clearAllDeliveries(){
+  delRows=[];renderDelRows();
+}
+
+// Delivery history
+async function loadDelHistory(){
+  const from=document.getElementById('dh-from').value;
+  const supId=document.getElementById('del-sup-sel').value;
+  try{
+    const p={action:'getDeliveries',from};
+    if(delSelectedCtr) p.centreNo=delSelectedCtr.centreNo;
+    const r=await api(p);
+    const list=document.getElementById('del-history-list');
+    if(!r.success||!r.data.length){list.innerHTML='<div class="empty"><div class="ico">📋</div><p>Deliveries இல்லை</p></div>';return;}
+
+    // group by society + date
+    const byDate={};
+    r.data.forEach(d=>{
+      const k=d.date+'|'+d.centreNo;
+      if(!byDate[k]) byDate[k]={date:d.date,centreNo:d.centreNo,centreName:d.centreName,entries:[]};
+      byDate[k].entries.push(d);
+    });
+
+    list.innerHTML=Object.values(byDate).slice(0,5).map(g=>`
+      <div style="padding:10px 0;border-bottom:1px solid #f0f4f8">
+        <div style="font-size:13px;font-weight:700;color:#c05621;margin-bottom:4px">${g.centreNo} – ${g.centreName} <span style="font-size:11px;color:#a0aec0;font-weight:400">${g.date}</span></div>
+        ${g.entries.map(e=>`<div style="font-size:12px;color:#4a5568">Farmer ${e.farmerCode}: ${e.productName.split('(')[0].trim()} × ${e.qty} = ₹${parseFloat(e.amount).toFixed(0)}</div>`).join('')}
+      </div>`).join('');
+  }catch(e){toast('Error','err');}
+}
+
+async function exportDeliveries(){
+  const from=document.getElementById('dh-from').value;
+  const p={action:'getDeliveries',from};
+  if(delSelectedCtr) p.centreNo=delSelectedCtr.centreNo;
+  try{
+    const r=await api(p);
+    if(!r.success||!r.data.length){toast('Data இல்லை','err');return;}
+    const hdr=['SocietyNo','SocietyName','FarmerCode','ProductName','Qty','Rate','Amount','Date'];
+    const rows=[hdr,...r.data.map(d=>[d.centreNo,d.centreName,d.farmerCode,d.productName,d.qty,d.rate,d.amount,d.date])];
+    const csv=rows.map(r=>r.map(c=>'"'+String(c||'').replace(/"/g,'""')+'"').join(',')).join(String.fromCharCode(10));
+    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='delivery_'+from+'.csv';
+    a.click();
+    toast('Export ✓','ok');
+  }catch(e){toast('Error','err');}
+}
+
 </script>
 </body>
 </html>
